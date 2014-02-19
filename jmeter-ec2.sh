@@ -64,8 +64,10 @@ LOCAL_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Execute the jmeter-ec2.properties file, establishing these constants.
 . $LOCAL_HOME/jmeter-ec2.properties
 
-project=$(basename `pwd`)
-project_home=`pwd`
+project="GetUsersResources"
+project_home=`pwd` && "/GetUserResources"
+echo $project
+echo $project_home
 
 # If exists then run a local version of the properties file to allow project customisations.
 if [ -f "$project_home/jmeter-ec2.properties" ] ; then
