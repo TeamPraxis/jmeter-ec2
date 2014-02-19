@@ -65,7 +65,7 @@ LOCAL_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $LOCAL_HOME/jmeter-ec2.properties
 
 project="GetUsersResources"
-project_home="pwd/GetUserResources"
+project_home="`pwd`/GetUserResources"
 echo $project
 echo $project_home
 
