@@ -318,6 +318,7 @@ function runsetup() {
     if [ "$setup" = "TRUE" ] ; then
     	echo -n "copying install.sh to $instance_count server(s)..."
 	    for host in ${hosts[@]} ; do
+            echo $LOCAL_HOME
 	        (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
 	                                      -i $PEM_PATH/$PEM_FILE \
 	                                      -P $REMOTE_PORT \
