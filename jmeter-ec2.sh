@@ -315,51 +315,51 @@ function runsetup() {
     fi
 
     # scp install.sh
-    if [ "$setup" = "TRUE" ] ; then
-    	echo -n "copying install.sh to $instance_count server(s)..."
-	    for host in ${hosts[@]} ; do
-            echo $LOCAL_HOME
-	        (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-	                                      -i $PEM_PATH/$PEM_FILE \
-	                                      -P $REMOTE_PORT \
-	                                      $LOCAL_HOME/install.sh \
-					      $LOCAL_HOME/jmeter-ec2.properties \
-	                                      $USER@$host:$REMOTE_HOME \
-	                                      && echo "done" > $project_home/$DATETIME-$host-scpinstall.out)
-	    done
+    # if [ "$setup" = "TRUE" ] ; then
+    # 	echo -n "copying install.sh to $instance_count server(s)..."
+	   #  for host in ${hosts[@]} ; do
+    #         echo $LOCAL_HOME
+	   #      (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+	   #                                    -i $PEM_PATH/$PEM_FILE \
+	   #                                    -P $REMOTE_PORT \
+	   #                                    $LOCAL_HOME/install.sh \
+				# 	      $LOCAL_HOME/jmeter-ec2.properties \
+	   #                                    $USER@$host:$REMOTE_HOME \
+	   #                                    && echo "done" > $project_home/$DATETIME-$host-scpinstall.out)
+	   #  done
 
 	    # check to see if the scp call is complete (could just use the wait command here...)
-	    res=0
-	    while [ "$res" != "$instance_count" ] ;
-	    do
-	        echo -n .
-	        res=$(grep -c "done" $project_home/$DATETIME*scpinstall.out \
-	            | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
-	        sleep 3
-	    done
-	    echo "complete"
-	    echo
+	   #  res=0
+	   #  while [ "$res" != "$instance_count" ] ;
+	   #  do
+	   #      echo -n .
+	   #      res=$(grep -c "done" $project_home/$DATETIME*scpinstall.out \
+	   #          | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
+	   #      sleep 3
+	   #  done
+	   #  echo "complete"
+	   #  echo
 
-	    # Install test software
-	    echo "running install.sh on $instance_count server(s)..."
-	    for host in ${hosts[@]} ; do
-	        (ssh -nq -o StrictHostKeyChecking=no \
-	            -i $PEM_PATH/$PEM_FILE $USER@$host -p $REMOTE_PORT \
-	            "$REMOTE_HOME/install.sh $REMOTE_HOME $attemptjavainstall $JMETER_VERSION"\
-	            > $project_home/$DATETIME-$host-install.out) &
-	    done
+	   #  # Install test software
+	   #  echo "running install.sh on $instance_count server(s)..."
+	   #  for host in ${hosts[@]} ; do
+	   #      (ssh -nq -o StrictHostKeyChecking=no \
+	   #          -i $PEM_PATH/$PEM_FILE $USER@$host -p $REMOTE_PORT \
+	   #          "$REMOTE_HOME/install.sh $REMOTE_HOME $attemptjavainstall $JMETER_VERSION"\
+	   #          > $project_home/$DATETIME-$host-install.out) &
+	   #  done
 
-	    # check to see if the install scripts are complete
-	    res=0
-	    while [ "$res" != "$instance_count" ] ; do # Installation not complete (count of matches for 'software installed' not equal to count of hosts running the test)
-	        echo -n .
-	        res=$(grep -c "software installed" $project_home/$DATETIME*install.out \
-	            | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
-	        sleep 3
-	    done
-	    echo "complete"
-	    echo
-    fi
+	   #  # check to see if the install scripts are complete
+	   #  res=0
+	   #  while [ "$res" != "$instance_count" ] ; do # Installation not complete (count of matches for 'software installed' not equal to count of hosts running the test)
+	   #      echo -n .
+	   #      res=$(grep -c "software installed" $project_home/$DATETIME*install.out \
+	   #          | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
+	   #      sleep 3
+	   #  done
+	   #  echo "complete"
+	   #  echo
+    # fi
 
     # Create a working jmx file and edit it to adjust thread counts and filepaths (leave the original jmx intact!)
     cp $project_home/jmx/$project.jmx $project_home/working
