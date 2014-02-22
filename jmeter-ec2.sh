@@ -507,7 +507,7 @@ function runsetup() {
     # scp jmx dir
     echo -n "jmx files.."
     for y in "${!hosts[@]}" ; do
-        (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r \
+        (scp -v -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r \
                                       -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
                                       $project_home/working_$y \
                                       $USER@${hosts[$y]}:$REMOTE_HOME/execute.jmx) &
