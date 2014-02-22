@@ -328,7 +328,7 @@ function runsetup() {
 	                                      && echo "done" > $project_home/$DATETIME-$host-scpinstall.out)
 	    done
 
-	    check to see if the scp call is complete (could just use the wait command here...)
+	    #check to see if the scp call is complete (could just use the wait command here...)
 	    res=0
 	    while [ "$res" != "$instance_count" ] ;
 	    do
