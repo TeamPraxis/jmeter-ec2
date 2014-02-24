@@ -204,7 +204,7 @@ print(&quot;setting the endTime: &quot; + props.get(&quot;gEndTime&quot;));
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">1000</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">420</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">180</stringProp>
         <longProp name="ThreadGroup.start_time">1391473146000</longProp>
         <longProp name="ThreadGroup.end_time">1391473146000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
