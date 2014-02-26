@@ -27,9 +27,9 @@ DATETIME=$(date "+%s")
 # First make sure we have the required params and if not print out an instructive message
 #if [ -z "$project" ] ; then
 if [ "$1" == "-h" ] ; then
-	echo 'usage: project="abc" percent=20 setup="TRUE" terminate="TRUE" count="3" env="UAT" release="3.23" comment="my notes" ./jmeter-ec2.sh'
+	echo 'usage: project_name="abc" percent=20 setup="TRUE" terminate="TRUE" count="3" env="UAT" release="3.23" comment="my notes" ./jmeter-ec2.sh'
 	echo
-	echo "[project]         -	required, directory and jmx name"
+	echo "[project_name]         -	required, directory and jmx name"
 	echo "[count]           -	optional, default=1"
 	echo "[percent]         -	optional, default=100"
 	echo "[setup]           -	optional, default='TRUE'"
@@ -42,6 +42,13 @@ if [ "$1" == "-h" ] ; then
 fi
 
 # Set any null parameters to '-'
+if [ -z "$project_name" ] ; then
+    echo "No project_name given."
+    echo
+    echo "Script exiting."
+    exit
+fi
+
 if [ -z "$env" ] ; then env="-" ; fi
 if [ -z "$release" ] ; then release="-" ; fi
 if [ -z "$comment" ] ; then comment="-" ; fi
@@ -63,9 +70,10 @@ LOCAL_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Execute the jmeter-ec2.properties file, establishing these constants.
 . $LOCAL_HOME/jmeter-ec2.properties
+echo "local home: " $LOCAL_HOME
 
-project="GetUsersResources"
-project_home="`pwd`/GetUsersResources"
+project=$project_name
+project_home="`pwd`/$project_name"
 echo $project
 echo $project_home
 
@@ -76,7 +84,7 @@ fi
 
 cd $EC2_HOME
 
-# check project directry exists
+# check project directory exists
 if [ ! -d "$project_home" ] ; then
     echo "The directory $project_home does not exist."
     echo
