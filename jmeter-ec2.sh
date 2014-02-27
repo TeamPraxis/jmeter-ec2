@@ -816,6 +816,7 @@ function runcleanup() {
 
 
     # terminate any running instances created
+    echo "$REMOTE_HOSTS"
     if [ -z "$REMOTE_HOSTS" ]; then
 		if [ "$terminate" = "TRUE" ] ; then
 	        echo "terminating instance(s)..."
