@@ -829,12 +829,12 @@ function runcleanup() {
     # process the files into one jtl results file
     echo -n "processing results..."
     for (( i=0; i<$instance_count; i++ )) ; do
-        cat $project_home/$project-$DATETIME-$i.jtl >> $project_home/$project-$DATETIME-sorted.jtl
+        cat $project_home/$project-$DATETIME-$i.jtl >> $project_home/$project-$DATETIME-grouped.jtl
         rm $project_home/$project-$DATETIME-$i.jtl # removes the individual results files (from each host) - might be useful to some people to keep these files?
     done
 
 	# Srt File
-#sort $project_home/$project-$DATETIME-grouped.jtl >> $project_home/$project-$DATETIME-sorted.jtl
+    sort $project_home/$project-$DATETIME-grouped.jtl >> $project_home/$project-$DATETIME-sorted.jtl
 
     # Insert TESTID
     if [ ! -z "$DB_HOST" ] ; then
