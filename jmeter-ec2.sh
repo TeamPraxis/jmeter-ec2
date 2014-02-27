@@ -27,18 +27,18 @@ DATETIME=$(date "+%s")
 # First make sure we have the required params and if not print out an instructive message
 #if [ -z "$project" ] ; then
 if [ "$1" == "-h" ] ; then
-	echo 'usage: project_name="abc" percent=20 setup="TRUE" terminate="TRUE" count="3" env="UAT" release="3.23" comment="my notes" ./jmeter-ec2.sh'
-	echo
-	echo "[project_name]         -	required, directory and jmx name"
-	echo "[count]           -	optional, default=1"
-	echo "[percent]         -	optional, default=100"
-	echo "[setup]           -	optional, default='TRUE'"
-	echo "[terminate]       -	optional, default='TRUE'"
-	echo "[env]             -	optional"
-	echo "[release]         -	optional"
-	echo "[comment]         -	optional"
-	echo
-	exit
+    echo 'usage: project_name="abc" percent=20 setup="TRUE" terminate="TRUE" count="3" env="UAT" release="3.23" comment="my notes" ./jmeter-ec2.sh'
+    echo
+    echo "[project_name]         -  required, directory and jmx name"
+    echo "[count]           -   optional, default=1"
+    echo "[percent]         -   optional, default=100"
+    echo "[setup]           -   optional, default='TRUE'"
+    echo "[terminate]       -   optional, default='TRUE'"
+    echo "[env]             -   optional"
+    echo "[release]         -   optional"
+    echo "[comment]         -   optional"
+    echo
+    exit
 fi
 
 # Set any null parameters to '-'
@@ -79,7 +79,7 @@ echo $project_home
 
 # If exists then run a local version of the properties file to allow project customisations.
 if [ -f "$project_home/jmeter-ec2.properties" ] ; then
-	. $project_home/jmeter-ec2.properties
+    . $project_home/jmeter-ec2.properties
 fi
 
 cd $EC2_HOME
@@ -94,40 +94,40 @@ fi
 
 # do some basic checks to prevent problems later
 function check_prereqs() {
-	# If there is a custom jmeter.properties, check for:
-	# - jmeter.save.saveservice.output_format=csv
-	# - jmeter.save.saveservice.thread_counts=true
-	if [ -r $LOCAL_HOME/jmeter.properties ] ; then
-	    has_csv_output=$(grep -c "^\s*jmeter.save.saveservice.output_format=csv"  $LOCAL_HOME/jmeter.properties)
-	    has_thread_counts=$(grep -c "^\s*jmeter.save.saveservice.thread_counts=true" $LOCAL_HOME/jmeter.properties)
-	    if [ $has_csv_output -eq "0" ] ; then
-		echo "WARN: Please ensure the jmeter.properties file has 'jmeter.save.saveservice.output_format=csv'. Could not find it!"
-	    fi
-	    if [ $has_thread_counts -eq "0" ] ; then
-		echo "WARN: Please ensure the jmeter.properties file has 'jmeter.save.saveservice.thread_counts=true'. Could not find it!"
-	    fi
-	else
-	    echo "WARN: Did not see a custom jmeter.properties file. Please ensure the remote hosts have the required settings 'jmeter.save.saveservice.output_format=csv' and 'jmeter.save.saveservice.thread_counts=true'"
-	fi
+    # If there is a custom jmeter.properties, check for:
+    # - jmeter.save.saveservice.output_format=csv
+    # - jmeter.save.saveservice.thread_counts=true
+    if [ -r $LOCAL_HOME/jmeter.properties ] ; then
+        has_csv_output=$(grep -c "^\s*jmeter.save.saveservice.output_format=csv"  $LOCAL_HOME/jmeter.properties)
+        has_thread_counts=$(grep -c "^\s*jmeter.save.saveservice.thread_counts=true" $LOCAL_HOME/jmeter.properties)
+        if [ $has_csv_output -eq "0" ] ; then
+        echo "WARN: Please ensure the jmeter.properties file has 'jmeter.save.saveservice.output_format=csv'. Could not find it!"
+        fi
+        if [ $has_thread_counts -eq "0" ] ; then
+        echo "WARN: Please ensure the jmeter.properties file has 'jmeter.save.saveservice.thread_counts=true'. Could not find it!"
+        fi
+    else
+        echo "WARN: Did not see a custom jmeter.properties file. Please ensure the remote hosts have the required settings 'jmeter.save.saveservice.output_format=csv' and 'jmeter.save.saveservice.thread_counts=true'"
+    fi
 
-	# Check that the test plan exists
-	if [ -f "$project_home/jmx/$project.jmx" ] ; then
-	    # Check that the jmx plan has a Generate Summary Reults listener (testclass="Summariser")
-	    summariser_count=$(grep -c "<Summariser .*testclass=\"Summariser\"" $project_home/jmx/$project.jmx)
-	    if [ -z $summariser_count ] ; then summariser_count=0 ; fi ;
-	    if [ $summariser_count -eq "0" ] ; then
-	    	echo "ERROR: Please ensure your JMeter test plan has a Generate Summary Results listener! It is needed for jmeter-ec2 to properly work!"
-	    fi
-	else
-	    echo "ERROR: Could not find test plan at the following location: $project_home/jmx/$project.jmx"
-	    exit
-	fi
+    # Check that the test plan exists
+    if [ -f "$project_home/jmx/$project.jmx" ] ; then
+        # Check that the jmx plan has a Generate Summary Reults listener (testclass="Summariser")
+        summariser_count=$(grep -c "<Summariser .*testclass=\"Summariser\"" $project_home/jmx/$project.jmx)
+        if [ -z $summariser_count ] ; then summariser_count=0 ; fi ;
+        if [ $summariser_count -eq "0" ] ; then
+            echo "ERROR: Please ensure your JMeter test plan has a Generate Summary Results listener! It is needed for jmeter-ec2 to properly work!"
+        fi
+    else
+        echo "ERROR: Could not find test plan at the following location: $project_home/jmx/$project.jmx"
+        exit
+    fi
 
-	# Check that the AMI tools are installed and accessible
-	if  ! type ec2-describe-instances &>/dev/null  ; then
-	    echo "ERROR: The AMI tools do not appear to be installed or accessible from command line (tried ec2-describe-instances)."
-	    exit
-	fi
+    # Check that the AMI tools are installed and accessible
+    if  ! type ec2-describe-instances &>/dev/null  ; then
+        echo "ERROR: The AMI tools do not appear to be installed or accessible from command line (tried ec2-describe-instances)."
+        exit
+    fi
 }
 
 function runsetup() {
@@ -164,11 +164,11 @@ function runsetup() {
         # create the instance(s) and capture the instance id(s)
         echo -n "requesting $instance_count instance(s)..."
         attempted_instanceids=(`ec2-run-instances \
-		            --key $AMAZON_KEYPAIR_NAME \
+                    --key $AMAZON_KEYPAIR_NAME \
                     -t $INSTANCE_TYPE \
                     -g $INSTANCE_SECURITYGROUP \
                     -n 1-$instance_count \
-		            --region $REGION \
+                    --region $REGION \
                     --availability-zone \
                     $INSTANCE_AVAILABILITYZONE $AMI_ID \
                     | awk '/^INSTANCE/ {print $2}'`)
@@ -207,13 +207,13 @@ function runsetup() {
         if [ $status_check_count -lt $status_check_limit ] ; then # all hosts started ok because count_passed==instance_count
             # get hostname and build the list used later in the script
 
-			# set the instanceids array to use from now on - attempted = actual
-			for key in "${!attempted_instanceids[@]}"
-			do
-			  instanceids["$key"]="${attempted_instanceids["$key"]}"
-			done
+            # set the instanceids array to use from now on - attempted = actual
+            for key in "${!attempted_instanceids[@]}"
+            do
+              instanceids["$key"]="${attempted_instanceids["$key"]}"
+            done
 
-			# set hosts array
+            # set hosts array
             hosts=(`ec2-describe-instances --region $REGION ${attempted_instanceids[@]} | awk '/INSTANCE/ {print $4}'`)
             echo "all hosts ready"
         else # Amazon probably failed to start a host [*** NOTE this is fairly common ***] so show a msg - TO DO. Could try to replace it with a new one?
@@ -229,14 +229,14 @@ function runsetup() {
             if [ "${#healthy_instanceids[@]}" -eq 0 ] ; then
                 countof_instanceids=0
                 echo "no instances successfully initialised, exiting"
-				if [ "$terminate" = "TRUE" ] ; then
-					echo
-				    # attempt to terminate any running instances - just to be sure
-			        echo "terminating instance(s)..."
-					# We use attempted_instanceids here to make sure that there are no orphan instances left lying around
-			        ec2-terminate-instances --region $REGION ${attempted_instanceids[@]}
-			        echo
-				fi
+                if [ "$terminate" = "TRUE" ] ; then
+                    echo
+                    # attempt to terminate any running instances - just to be sure
+                    echo "terminating instance(s)..."
+                    # We use attempted_instanceids here to make sure that there are no orphan instances left lying around
+                    ec2-terminate-instances --region $REGION ${attempted_instanceids[@]}
+                    echo
+                fi
                 exit
             else
                 countof_instanceids=${#healthy_instanceids[@]}
@@ -247,25 +247,25 @@ function runsetup() {
                 instance_count=$countof_instanceids
             fi
 
-			# set the array of instance ids based on only those that succeeded
-			for key in "${!healthy_instanceids[@]}"  # make sure you include the quotes there
-			do
-			  instanceids["$key"]="${healthy_instanceids["$key"]}"
-			done
+            # set the array of instance ids based on only those that succeeded
+            for key in "${!healthy_instanceids[@]}"  # make sure you include the quotes there
+            do
+              instanceids["$key"]="${healthy_instanceids["$key"]}"
+            done
         fi
-		echo
+        echo
 
-		# assign a name tag to each instance
-		echo "assigning tags..."
-		(ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag ProductKey=$project)
+        # assign a name tag to each instance
+        echo "assigning tags..."
+        (ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag ProductKey=$project)
         (ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag Service=prod)
         (ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag Description=PerformanceTest)
         (ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag Owner=$EMAIL)
         (ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag ContactEmail=$EMAIL)
-		(ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag Name="jmeter-ec2-$project")
-		wait
+        (ec2-create-tags --region $REGION ${attempted_instanceids[@]} --tag Name="jmeter-ec2-$project")
+        wait
         echo "complete"
-		echo
+        echo
 
         # if provided, assign elastic IPs to each instance
         if [ ! -z "$ELASTIC_IPS" ] ; then # Not Null - same as -n
@@ -274,20 +274,20 @@ function runsetup() {
                 (ec2-associate-address --region $REGION -i ${instanceids[x]} ${elasticips[x]})
                 hosts[x]=${elasticips[x]}
             done
-			wait
+            wait
             echo "complete"
 
             echo
             echo -n "checking elastic ips..."
             for x in "${!instanceids[@]}" ; do
-				# check for ssh connectivity on the new address
-	            while ssh -o StrictHostKeyChecking=no -q -i $PEM_PATH/$PEM_FILE \
-	                $USER@${hosts[x]} -p $REMOTE_PORT true && test; \
-	                do echo -n .; sleep 1; done
-	            # Note. If any IP is already in use on an instance that is still running then the ssh check above will return
-	            # a false positive. If this scenario is common you should put a sleep statement here.
+                # check for ssh connectivity on the new address
+                while ssh -o StrictHostKeyChecking=no -q -i $PEM_PATH/$PEM_FILE \
+                    $USER@${hosts[x]} -p $REMOTE_PORT true && test; \
+                    do echo -n .; sleep 1; done
+                # Note. If any IP is already in use on an instance that is still running then the ssh check above will return
+                # a false positive. If this scenario is common you should put a sleep statement here.
             done
-			wait
+            wait
             echo "complete"
             echo
         fi
@@ -306,67 +306,67 @@ function runsetup() {
         echo
         echo
 
-	    # Check if remote hosts are up
-	    for host in ${hosts[@]} ; do
-	        if [ ! "$(ssh -q -q \
-	            -o StrictHostKeyChecking=no \
-	            -o "BatchMode=yes" \
-	            -o "ConnectTimeout 15" \
-	            -i $PEM_PATH/$PEM_FILE \
-	            -p $REMOTE_PORT \
-	            $USER@$host echo up 2>&1)" == "up" ] ; then
-	            echo "Host $host is not responding, script exiting..."
-	            echo
-	            exit
-	        fi
-	    done
+        # Check if remote hosts are up
+        for host in ${hosts[@]} ; do
+            if [ ! "$(ssh -q -q \
+                -o StrictHostKeyChecking=no \
+                -o "BatchMode=yes" \
+                -o "ConnectTimeout 15" \
+                -i $PEM_PATH/$PEM_FILE \
+                -p $REMOTE_PORT \
+                $USER@$host echo up 2>&1)" == "up" ] ; then
+                echo "Host $host is not responding, script exiting..."
+                echo
+                exit
+            fi
+        done
     fi
 
     # scp install.sh
     if [ "$setup" = "TRUE" ] ; then
-    	echo -n "copying install.sh to $instance_count server(s)..."
-	    for host in ${hosts[@]} ; do
+        echo -n "copying install.sh to $instance_count server(s)..."
+        for host in ${hosts[@]} ; do
             echo $LOCAL_HOME
-	        (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-	                                      -i $PEM_PATH/$PEM_FILE \
-	                                      -P $REMOTE_PORT \
-	                                      $LOCAL_HOME/install.sh \
-					      $LOCAL_HOME/jmeter-ec2.properties \
-	                                      $USER@$host:$REMOTE_HOME \
-	                                      && echo "done" > $project_home/$DATETIME-$host-scpinstall.out)
-	    done
+            (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                                          -i $PEM_PATH/$PEM_FILE \
+                                          -P $REMOTE_PORT \
+                                          $LOCAL_HOME/install.sh \
+                          $LOCAL_HOME/jmeter-ec2.properties \
+                                          $USER@$host:$REMOTE_HOME \
+                                          && echo "done" > $project_home/$DATETIME-$host-scpinstall.out)
+        done
 
-	    #check to see if the scp call is complete (could just use the wait command here...)
-	    res=0
-	    while [ "$res" != "$instance_count" ] ;
-	    do
-	        echo -n .
-	        res=$(grep -c "done" $project_home/$DATETIME*scpinstall.out \
-	            | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
-	        sleep 3
-	    done
-	    echo "complete"
-	    echo
+        #check to see if the scp call is complete (could just use the wait command here...)
+        res=0
+        while [ "$res" != "$instance_count" ] ;
+        do
+            echo -n .
+            res=$(grep -c "done" $project_home/$DATETIME*scpinstall.out \
+                | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
+            sleep 3
+        done
+        echo "complete"
+        echo
 
-	    # Install test software
-	    echo "running install.sh on $instance_count server(s)..."
-	    for host in ${hosts[@]} ; do
-	        (ssh -nq -o StrictHostKeyChecking=no \
-	            -i $PEM_PATH/$PEM_FILE $USER@$host -p $REMOTE_PORT \
-	            "$REMOTE_HOME/install.sh $REMOTE_HOME $attemptjavainstall $JMETER_VERSION"\
-	            > $project_home/$DATETIME-$host-install.out) &
-	    done
+        # Install test software
+        echo "running install.sh on $instance_count server(s)..."
+        for host in ${hosts[@]} ; do
+            (ssh -nq -o StrictHostKeyChecking=no \
+                -i $PEM_PATH/$PEM_FILE $USER@$host -p $REMOTE_PORT \
+                "$REMOTE_HOME/install.sh $REMOTE_HOME $attemptjavainstall $JMETER_VERSION"\
+                > $project_home/$DATETIME-$host-install.out) &
+        done
 
-	    # check to see if the install scripts are complete
-	    res=0
-	    while [ "$res" != "$instance_count" ] ; do # Installation not complete (count of matches for 'software installed' not equal to count of hosts running the test)
-	        echo -n .
-	        res=$(grep -c "software installed" $project_home/$DATETIME*install.out \
-	            | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
-	        sleep 3
-	    done
-	    echo "complete"
-	    echo
+        # check to see if the install scripts are complete
+        res=0
+        while [ "$res" != "$instance_count" ] ; do # Installation not complete (count of matches for 'software installed' not equal to count of hosts running the test)
+            echo -n .
+            res=$(grep -c "software installed" $project_home/$DATETIME*install.out \
+                | awk -F: '{ s+=$NF } END { print s }') # the awk command here sums up the output if multiple matches were found
+            sleep 3
+        done
+        echo "complete"
+        echo
     fi
 
     # Create a working jmx file and edit it to adjust thread counts and filepaths (leave the original jmx intact!)
@@ -430,84 +430,84 @@ function runsetup() {
        # get count of thread groups, show results to screen
        countofthreadgroups=${#threadgroup_threadcounts[@]}
        echo "editing thread counts..."
-	echo
-	echo " - $project.jmx has $countofthreadgroups threadgroup(s) - [inc. those disabled]"
+    echo
+    echo " - $project.jmx has $countofthreadgroups threadgroup(s) - [inc. those disabled]"
 
-	# sum up the thread counts
-	sumofthreadgroups=0
+    # sum up the thread counts
+    sumofthreadgroups=0
        for n in ${!threadgroup_threadcounts[@]} ; do
-		# populate an array of the original thread counts (used in the find and replace when editing the jmx)
-		orig_threadcounts[$n]=${threadgroup_threadcounts[$n]}
-		# create a total of the original thread counts
-		sumofthreadgroups=$(echo "$sumofthreadgroups+${threadgroup_threadcounts[$n]}" | bc)
+        # populate an array of the original thread counts (used in the find and replace when editing the jmx)
+        orig_threadcounts[$n]=${threadgroup_threadcounts[$n]}
+        # create a total of the original thread counts
+        sumofthreadgroups=$(echo "$sumofthreadgroups+${threadgroup_threadcounts[$n]}" | bc)
        done
 
-	# adjust each thread count based on percent
-	sumofadjthreadgroups=0
-	for n in "${!orig_threadcounts[@]}" ; do
-		# get a new thread count to 2 decimal places
-		float=$(echo "scale=2; ${orig_threadcounts[$n]}*($percent/100)" | bc)
-		# round to integer
-		new_threadcounts[$n]=$(echo "($float+0.5)/1" | bc)
-		if [ "${new_threadcounts[$n]}" -eq "0" ] ; then
-			echo " - Thread group ${threadgroup_names[$n]} has ${orig_threadcounts[$n]} threads, $percent percent of this is $float which rounds to 0, so we're going to set it to 1 instead."
-			new_threadcounts[$n]=1
-			sumofadjthreadgroups=$(echo "$sumofadjthreadgroups+1" | bc)
-		fi
-	done
+    # adjust each thread count based on percent
+    sumofadjthreadgroups=0
+    for n in "${!orig_threadcounts[@]}" ; do
+        # get a new thread count to 2 decimal places
+        float=$(echo "scale=2; ${orig_threadcounts[$n]}*($percent/100)" | bc)
+        # round to integer
+        new_threadcounts[$n]=$(echo "($float+0.5)/1" | bc)
+        if [ "${new_threadcounts[$n]}" -eq "0" ] ; then
+            echo " - Thread group ${threadgroup_names[$n]} has ${orig_threadcounts[$n]} threads, $percent percent of this is $float which rounds to 0, so we're going to set it to 1 instead."
+            new_threadcounts[$n]=1
+            sumofadjthreadgroups=$(echo "$sumofadjthreadgroups+1" | bc)
+        fi
+    done
 
-	# Now we sum up the thread counts and print a total
-	for n in ${!new_threadcounts[@]} ; do
-		sumofadjthreadgroups=$(echo "$sumofadjthreadgroups+${new_threadcounts[$n]}" | bc)
-	done
+    # Now we sum up the thread counts and print a total
+    for n in ${!new_threadcounts[@]} ; do
+        sumofadjthreadgroups=$(echo "$sumofadjthreadgroups+${new_threadcounts[$n]}" | bc)
+    done
 
-	echo " - There are $sumofthreadgroups threads in the test plan, this test is set to execute $percent percent of these, so will run using $sumofadjthreadgroups threads"
+    echo " - There are $sumofthreadgroups threads in the test plan, this test is set to execute $percent percent of these, so will run using $sumofadjthreadgroups threads"
 
-	# now we loop through each thread group, editing a separate file for each host each iteration (nested loop)
-	for i in ${!threadgroup_threadcounts[@]} ; do
-		# using modulo we distribute the threads over all hosts, building the array 'threads'
-		# taking 10(threads)/3(hosts) as an example you would expect two hosts to be given 3 threads and one to be given 4.
-		for (( x=1; x<=${new_threadcounts[$i]}; x++ )); do
-			: $(( threads[$(( $x % ${#hosts[@]} ))]++ ))
-		done
+    # now we loop through each thread group, editing a separate file for each host each iteration (nested loop)
+    for i in ${!threadgroup_threadcounts[@]} ; do
+        # using modulo we distribute the threads over all hosts, building the array 'threads'
+        # taking 10(threads)/3(hosts) as an example you would expect two hosts to be given 3 threads and one to be given 4.
+        for (( x=1; x<=${new_threadcounts[$i]}; x++ )); do
+            : $(( threads[$(( $x % ${#hosts[@]} ))]++ ))
+        done
 
-		# here we loop through every host, editing the jmx file and using a temp file to carry the changes over
-		for y in "${!hosts[@]}" ; do
-			# we're already in a loop for each thread group but awk will parse the entire file each time it is called so we need to
-			# use an index to know when to make the edit
-			# when c (awk's index) matches i (the main for loop's index) then a substitution is made
+        # here we loop through every host, editing the jmx file and using a temp file to carry the changes over
+        for y in "${!hosts[@]}" ; do
+            # we're already in a loop for each thread group but awk will parse the entire file each time it is called so we need to
+            # use an index to know when to make the edit
+            # when c (awk's index) matches i (the main for loop's index) then a substitution is made
 
-			# first check for any null values (caused by lots of hosts and not many threads)
-			threadgroupschanged=0
-			if [ -z "${threads[$y]}" ] ; then
-				threads[$y]=1
-				threadgroupschanged=$(echo "$threadgroupschanged+1" | bc)
-			fi
-			if [ "$threadgroupschanged" == "1" ] ; then
-				echo " - $threadgroupschanged thread groups were allocated zero threads, this happens because the total allocated threads to a group is less than the $instance_count instances being used."
-				echo "   To get around this the script gave each group an extra thread, a better solution is to revise the test configuration to use more threads / less instances"
-			fi
-			findstr="threads\">"${orig_threadcounts[$i]}
-			replacestr="threads\">"${threads[$y]}
-			awk -v "findthis=$findstr" -v "replacewiththis=$replacestr" \
-				'BEGIN{c=0} \
-				/ThreadGroup\.num_threads\">[^<]*</ \
-				{if(c=='"$i"'){sub(findthis,replacewiththis)};c++}1' \
-				"$working_jmx"_"$y" > "$temp_jmx"_"$y"
+            # first check for any null values (caused by lots of hosts and not many threads)
+            threadgroupschanged=0
+            if [ -z "${threads[$y]}" ] ; then
+                threads[$y]=1
+                threadgroupschanged=$(echo "$threadgroupschanged+1" | bc)
+            fi
+            if [ "$threadgroupschanged" == "1" ] ; then
+                echo " - $threadgroupschanged thread groups were allocated zero threads, this happens because the total allocated threads to a group is less than the $instance_count instances being used."
+                echo "   To get around this the script gave each group an extra thread, a better solution is to revise the test configuration to use more threads / less instances"
+            fi
+            findstr="threads\">"${orig_threadcounts[$i]}
+            replacestr="threads\">"${threads[$y]}
+            awk -v "findthis=$findstr" -v "replacewiththis=$replacestr" \
+                'BEGIN{c=0} \
+                /ThreadGroup\.num_threads\">[^<]*</ \
+                {if(c=='"$i"'){sub(findthis,replacewiththis)};c++}1' \
+                "$working_jmx"_"$y" > "$temp_jmx"_"$y"
 
-			# using awk requires the use of a temp file to save the results of the command, update the working file with this file
-			rm "$working_jmx"_"$y"
-			mv "$temp_jmx"_"$y" "$working_jmx"_"$y"
-		done
+            # using awk requires the use of a temp file to save the results of the command, update the working file with this file
+            rm "$working_jmx"_"$y"
+            mv "$temp_jmx"_"$y" "$working_jmx"_"$y"
+        done
 
-		# write update to screen - removed 23/04/2012
-		# echo "...$i) ${threadgroup_names[$i]} has ${threadgroup_threadcounts[$i]} thread(s), to be distributed over $instance_count instance(s)"
+        # write update to screen - removed 23/04/2012
+        # echo "...$i) ${threadgroup_names[$i]} has ${threadgroup_threadcounts[$i]} thread(s), to be distributed over $instance_count instance(s)"
 
-		unset threads
-	done
-	echo
-	echo "...thread counts updated"
-	echo
+        unset threads
+    done
+    echo
+    echo "...thread counts updated"
+    echo
 
     # scp the test files onto each host
     echo -n "copying test files to $instance_count server(s)..."
@@ -525,98 +525,98 @@ function runsetup() {
 
     # scp data dir
     if [ "$setup" = "TRUE" ] ; then
-    	if [ -r $project_home/data ] ; then # don't try to upload this optional dir if it is not present
-	        echo -n "data dir.."
-	        for host in ${hosts[@]} ; do
-	            (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r \
-	                                          -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
-	                                          $project_home/data \
-	                                          $USER@$host:$REMOTE_HOME/) &
-	        done
-	        wait
-	        echo -n "done...."
-	    fi
+        if [ -r $project_home/data ] ; then # don't try to upload this optional dir if it is not present
+            echo -n "data dir.."
+            for host in ${hosts[@]} ; do
+                (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r \
+                                              -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
+                                              $project_home/data \
+                                              $USER@$host:$REMOTE_HOME/) &
+            done
+            wait
+            echo -n "done...."
+        fi
 
-	    # scp jmeter.properties
-	    if [ -r $LOCAL_HOME/jmeter.properties ] ; then # don't try to upload this optional file if it is not present
-	        echo -n "jmeter.properties.."
-	        for host in ${hosts[@]} ; do
-	            (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-	                                          -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
-	                                          $LOCAL_HOME/jmeter.properties \
-	                                          $USER@$host:$REMOTE_HOME/$JMETER_VERSION/bin/) &
-	        done
-	        wait
-	        echo -n "done...."
-	    fi
+        # scp jmeter.properties
+        if [ -r $LOCAL_HOME/jmeter.properties ] ; then # don't try to upload this optional file if it is not present
+            echo -n "jmeter.properties.."
+            for host in ${hosts[@]} ; do
+                (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                                              -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
+                                              $LOCAL_HOME/jmeter.properties \
+                                              $USER@$host:$REMOTE_HOME/$JMETER_VERSION/bin/) &
+            done
+            wait
+            echo -n "done...."
+        fi
 
-	    # scp jmeter execution file
-	    if [ -r $LOCAL_HOME/jmeter ] ; then # don't try to upload this optional file if it is not present
-	        echo -n "jmeter execution file..."
-	        for host in ${hosts[@]} ; do
-	            (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-	                                          -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
-	                                          $LOCAL_HOME/jmeter $LOCAL_HOME/jmeter \
-	                                          $USER@$host:$REMOTE_HOME/$JMETER_VERSION/bin/) &
-	        done
-	        wait
-	        echo -n "done...."
-	    fi
+        # scp jmeter execution file
+        if [ -r $LOCAL_HOME/jmeter ] ; then # don't try to upload this optional file if it is not present
+            echo -n "jmeter execution file..."
+            for host in ${hosts[@]} ; do
+                (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                                              -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
+                                              $LOCAL_HOME/jmeter $LOCAL_HOME/jmeter \
+                                              $USER@$host:$REMOTE_HOME/$JMETER_VERSION/bin/) &
+            done
+            wait
+            echo -n "done...."
+        fi
 
-		# scp any custom jar files
-	    if [ -d $LOCAL_HOME/plugins ] && [ -n $(ls $LOCAL_HOME/plugins/) ] ; then # don't try to upload any files if none present
-	        echo -n "custom jar file(s)..."
-	        for host in ${hosts[@]} ; do
-	            (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-	                                          -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
-	                                          $LOCAL_HOME/plugins/*.jar \
-	                                          $USER@$host:$REMOTE_HOME/$JMETER_VERSION/lib/ext/) &
-	        done
-	        wait
-	        echo -n "done...."
-	    fi
+        # scp any custom jar files
+        if [ -d $LOCAL_HOME/plugins ] && [ -n $(ls $LOCAL_HOME/plugins/) ] ; then # don't try to upload any files if none present
+            echo -n "custom jar file(s)..."
+            for host in ${hosts[@]} ; do
+                (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                                              -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
+                                              $LOCAL_HOME/plugins/*.jar \
+                                              $USER@$host:$REMOTE_HOME/$JMETER_VERSION/lib/ext/) &
+            done
+            wait
+            echo -n "done...."
+        fi
 
-	    # scp any project specific custom jar files
-	    if [ -d $project_home/plugins ] && [ -n $(ls $project_home/plugins/) ] ; then # don't try to upload any files if none present
-	        echo -n "project specific jar file(s)..."
-	        for host in ${hosts[@]} ; do
-	            (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-	                                          -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
-	                                          $project_home/plugins/*.jar \
-	                                          $USER@$host:$REMOTE_HOME/$JMETER_VERSION/lib/ext/) &
-	        done
-	        wait
-	        echo -n "done...."
-	    fi
+        # scp any project specific custom jar files
+        if [ -d $project_home/plugins ] && [ -n $(ls $project_home/plugins/) ] ; then # don't try to upload any files if none present
+            echo -n "project specific jar file(s)..."
+            for host in ${hosts[@]} ; do
+                (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                                              -i $PEM_PATH/$PEM_FILE -P $REMOTE_PORT \
+                                              $project_home/plugins/*.jar \
+                                              $USER@$host:$REMOTE_HOME/$JMETER_VERSION/lib/ext/) &
+            done
+            wait
+            echo -n "done...."
+        fi
 
-		if [ ! -z "$DB_HOST" ] ; then
-			# upload import-results.sh
-		    echo -n "copying import-results.sh to database..."
-		    (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-		                                  -i $DB_PEM_PATH/$DB_PEM_FILE -P $DB_SSH_PORT \
-		                                  $LOCAL_HOME/import-results.sh \
-		                                  $DB_PEM_USER@$DB_HOST:$REMOTE_HOME) &
-			wait
+        if [ ! -z "$DB_HOST" ] ; then
+            # upload import-results.sh
+            echo -n "copying import-results.sh to database..."
+            (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                                          -i $DB_PEM_PATH/$DB_PEM_FILE -P $DB_SSH_PORT \
+                                          $LOCAL_HOME/import-results.sh \
+                                          $DB_PEM_USER@$DB_HOST:$REMOTE_HOME) &
+            wait
 
-			# set permissions
-		    (ssh -n -o StrictHostKeyChecking=no \
-		        -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
-				"chmod 755 $REMOTE_HOME/import-results.sh")
-			wait
-			echo -n "done...."
-		fi
+            # set permissions
+            (ssh -n -o StrictHostKeyChecking=no \
+                -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
+                "chmod 755 $REMOTE_HOME/import-results.sh")
+            wait
+            echo -n "done...."
+        fi
 
-		echo "all files uploaded"
-	    echo
-	fi
+        echo "all files uploaded"
+        echo
+    fi
 
-	if [ ! -z "$DB_HOST" ] ; then
-		# Add an entry to the tests table in the database
-		echo -n "creating new test in database..."
-		updateTest 0 x x "$release" "$project" "$env" "$comment"
-		echo "testid $newTestid created"
-		echo
-	fi
+    if [ ! -z "$DB_HOST" ] ; then
+        # Add an entry to the tests table in the database
+        echo -n "creating new test in database..."
+        updateTest 0 x x "$release" "$project" "$env" "$comment"
+        echo "testid $newTestid created"
+        echo
+    fi
 
     echo
 
@@ -655,14 +655,14 @@ function runtest() {
     # to be certain, we read the value in here and adjust the wait to match (this prevents lots of duplicates being written to the screen)
     sleep_interval=$(awk 'BEGIN { FS = "\=" } ; /summariser.interval/ {print $2}' $LOCAL_HOME/jmeter.properties)
     runningtotal_seconds=$(echo "$RUNNINGTOTAL_INTERVAL * $sleep_interval" | bc)
-	# $epoch is used when importing to mysql (if enabled) because we want unix timestamps, not datetime, as this works better when graphing.
-	epoch_seconds=$(date +%s)
-	epoch_milliseconds=$(echo "$epoch_seconds* 1000" | bc) # milliseconds since Mick Jagger became famous
-	start_date=$(date) # warning, epoch and start_date do not (absolutely) equal each other!
-	if [ ! -z "$DB_HOST" ] ; then
-		# mark test as running in database
-		updateTest 1 "$newTestid" 0 "$release" "$project" "$env" "$comment" "$epoch_milliseconds"
-	fi
+    # $epoch is used when importing to mysql (if enabled) because we want unix timestamps, not datetime, as this works better when graphing.
+    epoch_seconds=$(date +%s)
+    epoch_milliseconds=$(echo "$epoch_seconds* 1000" | bc) # milliseconds since Mick Jagger became famous
+    start_date=$(date) # warning, epoch and start_date do not (absolutely) equal each other!
+    if [ ! -z "$DB_HOST" ] ; then
+        # mark test as running in database
+        updateTest 1 "$newTestid" 0 "$release" "$project" "$env" "$comment" "$epoch_milliseconds"
+    fi
     echo "JMeter started at $start_date"
     echo "===================================================================== START OF JMETER-EC2 TEST ================================================================================"
     echo "> [updates: every $sleep_interval seconds | running total: every $runningtotal_seconds seconds]"
@@ -777,7 +777,7 @@ function runtest() {
         count_overallhosts=$(echo "$count_overallhosts+$count_total" | bc) # add the value from this host to the values from other hosts
         avg_overallhosts=$(echo "$avg_overallhosts+$avg_total" | bc)
         tps_overallhosts=$(echo "$tps_overallhosts+$tps_total" | bc) # add the value from this host to the values from other hosts
-		tps_recent_overallhosts=$(echo "$tps_recent_overallhosts+$tps_recent" | bc)
+        tps_recent_overallhosts=$(echo "$tps_recent_overallhosts+$tps_recent" | bc)
         errors_overallhosts=$(echo "$errors_overallhosts+$errors_total" | bc) # add the value from this host to the values from other hosts
     done
 
@@ -786,8 +786,8 @@ function runtest() {
 }
 
 function runcleanup() {
-	# Turn off the CTRL-C trap now that we are already in the runcleanup function
-	trap - INT
+    # Turn off the CTRL-C trap now that we are already in the runcleanup function
+    trap - INT
 
     if [ "$teststarted" -eq 1 ] ; then
         # display final results
@@ -816,14 +816,13 @@ function runcleanup() {
 
 
     # terminate any running instances created
-    echo "$REMOTE_HOSTS"
     if [ -z "$REMOTE_HOSTS" ]; then
-		if [ "$terminate" = "TRUE" ] ; then
-	        echo "terminating instance(s)..."
-			# We use attempted_instanceids here to make sure that there are no orphan instances left lying around
-	        ec2-terminate-instances --region $REGION ${attempted_instanceids[@]}
-	        echo
-		fi
+        if [ "$terminate" = "TRUE" ] ; then
+            echo "terminating instance(s)..."
+            # We use attempted_instanceids here to make sure that there are no orphan instances left lying around
+            ec2-terminate-instances --region $REGION ${attempted_instanceids[@]}
+            echo
+        fi
     fi
 
 
@@ -834,41 +833,41 @@ function runcleanup() {
         rm $project_home/$project-$DATETIME-$i.jtl # removes the individual results files (from each host) - might be useful to some people to keep these files?
     done
 
-	# Srt File
+    # Srt File
     sort $project_home/$project-$DATETIME-grouped.jtl >> $project_home/$project-$DATETIME-sorted.jtl
 
     # Insert TESTID
     if [ ! -z "$DB_HOST" ] ; then
         awk -v v_testid="$newTestid," '{print v_testid,$0}' $project_home/$project-$DATETIME-sorted.jtl >> $project_home/$project-$DATETIME-appended.jtl
-	else
+    else
         mv $project_home/$project-$DATETIME-sorted.jtl $project_home/$project-$DATETIME-appended.jtl
     fi
 
-	# Remove blank lines
-	sed '/^$/d' $project_home/$project-$DATETIME-appended.jtl >> $project_home/$project-$DATETIME-noblanks.jtl
+    # Remove blank lines
+    sed '/^$/d' $project_home/$project-$DATETIME-appended.jtl >> $project_home/$project-$DATETIME-noblanks.jtl
 
     # Split the thread label into two columns
     #sed 's/ \([0-9][0-9]*-[0-9][0-9]*,\)/,\1/' \
     #                  $project_home/$project-$DATETIME-sorted.jtl >> \
     #                  $project_home/$project-$DATETIME-complete.jtl
 
-	# Remove any lines containing "0,0,Error:" - which seems to be an intermittant bug in JM where the getTimestamp call fails with a nullpointer
-	sed '/^0,0,Error:/d' $project_home/$project-$DATETIME-noblanks.jtl >> $project_home/$project-$DATETIME-complete.jtl
+    # Remove any lines containing "0,0,Error:" - which seems to be an intermittant bug in JM where the getTimestamp call fails with a nullpointer
+    sed '/^0,0,Error:/d' $project_home/$project-$DATETIME-noblanks.jtl >> $project_home/$project-$DATETIME-complete.jtl
 
-	# Calclulate test duration
-	start_time=$(head -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
-	end_time=$(tail -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
-	duration=$(echo "$end_time-$start_time" | bc)
-	if [ ! $duration > 0 ] ; then
-		duration=0;
-	fi
+    # Calclulate test duration
+    start_time=$(head -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
+    end_time=$(tail -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
+    duration=$(echo "$end_time-$start_time" | bc)
+    if [ ! $duration > 0 ] ; then
+        duration=0;
+    fi
 
-	if [ ! -z "$DB_HOST" ] ; then
-		# mark test as complete in database
-		updateTest 2 "$newTestid" "$duration"
-	fi
+    if [ ! -z "$DB_HOST" ] ; then
+        # mark test as complete in database
+        updateTest 2 "$newTestid" "$duration"
+    fi
 
-	# Tidy up
+    # Tidy up
     if [ -e "$project_home/$project-$DATETIME-grouped.jtl" ] ; then rm $project_home/$project-$DATETIME-grouped.jtl ; fi
     if [ -e "$project_home/$project-$DATETIME-sorted.jtl" ] ; then rm $project_home/$project-$DATETIME-sorted.jtl ; fi
     if [ -e "$project_home/$project-$DATETIME-appended.jtl" ] ; then rm $project_home/$project-$DATETIME-appended.jtl ; fi
@@ -876,64 +875,64 @@ function runcleanup() {
     mkdir -p $project_home/results/
     mv $project_home/$project-$DATETIME-complete.jtl $project_home/results/
 
-	#***************************************************************************
-	# IMPORT RESULTS TO MYSQL DATABASE - IF SPECIFIED IN PROPERTIES
-	# scp import-results.sh
-	if [ ! -z "$DB_HOST" ] ; then
-	    echo -n "copying import-results.sh to database..."
-	    (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-	                                  -i $DB_PEM_PATH/$DB_PEM_FILE -P $DB_SSH_PORT \
-	                                  $LOCAL_HOME/import-results.sh \
-	                                  $DB_PEM_USER@$DB_HOST:$REMOTE_HOME) &
-		wait
-		echo -n "done...."
+    #***************************************************************************
+    # IMPORT RESULTS TO MYSQL DATABASE - IF SPECIFIED IN PROPERTIES
+    # scp import-results.sh
+    if [ ! -z "$DB_HOST" ] ; then
+        echo -n "copying import-results.sh to database..."
+        (scp -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+                                      -i $DB_PEM_PATH/$DB_PEM_FILE -P $DB_SSH_PORT \
+                                      $LOCAL_HOME/import-results.sh \
+                                      $DB_PEM_USER@$DB_HOST:$REMOTE_HOME) &
+        wait
+        echo -n "done...."
 
-	    # scp results to remote db
-	    echo -n "uploading jtl file to database.."
-	    (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r \
-	                                  -i $DB_PEM_PATH/$DB_PEM_FILE -P $DB_SSH_PORT \
-	                                  $project_home/results/$project-$DATETIME-complete.jtl \
-	                                  $DB_PEM_USER@$DB_HOST:$REMOTE_HOME/import.csv) &
-	    wait
-	    echo -n "done...."
+        # scp results to remote db
+        echo -n "uploading jtl file to database.."
+        (scp -q -C -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r \
+                                      -i $DB_PEM_PATH/$DB_PEM_FILE -P $DB_SSH_PORT \
+                                      $project_home/results/$project-$DATETIME-complete.jtl \
+                                      $DB_PEM_USER@$DB_HOST:$REMOTE_HOME/import.csv) &
+        wait
+        echo -n "done...."
 
-		# set permissions
-	    (ssh -n -o StrictHostKeyChecking=no \
-	        -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
-			"chmod 755 $REMOTE_HOME/import-results.sh")
+        # set permissions
+        (ssh -n -o StrictHostKeyChecking=no \
+            -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
+            "chmod 755 $REMOTE_HOME/import-results.sh")
 
-	    # Import jtl to database...
-	    echo -n "importing jtl file..."
-	    (ssh -nq -o StrictHostKeyChecking=no \
-	        -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
-	        "$REMOTE_HOME/import-results.sh \
-						'localhost' \
-						'$DB_NAME' \
-						'$DB_USER' \
-						'$DB_PSWD' \
-						'$REMOTE_HOME/import.csv' \
-						'$epoch_milliseconds' \
-						'$release' \
-						'$project' \
-						'$env' \
-						'$comment' \
-						'$duration' \
-						'$newTestid'" \
-	        > $project_home/$DATETIME-import.out) &
+        # Import jtl to database...
+        echo -n "importing jtl file..."
+        (ssh -nq -o StrictHostKeyChecking=no \
+            -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
+            "$REMOTE_HOME/import-results.sh \
+                        'localhost' \
+                        '$DB_NAME' \
+                        '$DB_USER' \
+                        '$DB_PSWD' \
+                        '$REMOTE_HOME/import.csv' \
+                        '$epoch_milliseconds' \
+                        '$release' \
+                        '$project' \
+                        '$env' \
+                        '$comment' \
+                        '$duration' \
+                        '$newTestid'" \
+            > $project_home/$DATETIME-import.out) &
 
-	    # check to see if the install scripts are complete
-	    res=0
-		counter=0
-	    while [ "$res" = 0 ] ; do # Import not complete
-	        echo -n .
-	        res=$(grep -c "import complete" $project_home/$DATETIME-import.out)
-			counter=$(($counter+1))
-	        sleep $counter # With large files this step can take considerable time so we gradually increase wait times to prevent excess screen dottage
-	    done
-	    echo "done"
-    	echo
-	fi
-	#***************************************************************************
+        # check to see if the install scripts are complete
+        res=0
+        counter=0
+        while [ "$res" = 0 ] ; do # Import not complete
+            echo -n .
+            res=$(grep -c "import complete" $project_home/$DATETIME-import.out)
+            counter=$(($counter+1))
+            sleep $counter # With large files this step can take considerable time so we gradually increase wait times to prevent excess screen dottage
+        done
+        echo "done"
+        echo
+    fi
+    #***************************************************************************
 
 
     # tidy up working files
@@ -953,74 +952,74 @@ function runcleanup() {
 
 function updateTest() {
 
-	sqlstr="mysql -u $DB_USER -p$DB_PSWD $DB_NAME"
+    sqlstr="mysql -u $DB_USER -p$DB_PSWD $DB_NAME"
 
-	function dosql {
-		#echo "sqlstmt = '"$1"'"
-		#echo "sqlstr = '"$sqlstr"'"
-		sqlresult=$(ssh -nq -o StrictHostKeyChecking=no \
-	        -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
-			"$sqlstr -e '$1'")
+    function dosql {
+        #echo "sqlstmt = '"$1"'"
+        #echo "sqlstr = '"$sqlstr"'"
+        sqlresult=$(ssh -nq -o StrictHostKeyChecking=no \
+            -i $DB_PEM_PATH/$DB_PEM_FILE $DB_PEM_USER@$DB_HOST -p $DB_SSH_PORT \
+            "$sqlstr -e '$1'")
 
-		#echo "sqlresult = '"$sqlresult"'"
-	}
+        #echo "sqlresult = '"$sqlresult"'"
+    }
 
-	case $1 in
+    case $1 in
 
-		0)	#pending
+        0)  #pending
 
-			sqlcreate="CREATE TABLE IF NOT EXISTS  tests ( \
-			  testid int(11) NOT NULL AUTO_INCREMENT, \
-			  buildlife varchar(45) DEFAULT NULL, \
-			  project varchar(45) DEFAULT NULL, \
-			  environment varchar(45) DEFAULT NULL, \
-			  duration varchar(45) DEFAULT NULL, \
-			  comment varchar(45) DEFAULT NULL, \
-			  startdate varchar(45) DEFAULT NULL, \
-			  accepted varchar(45) DEFAULT NULL, \
-			  status int(11) DEFAULT NULL, \
-			  value9 varchar(45) DEFAULT NULL, \
-			  value10 varchar(45) DEFAULT NULL, \
-			  PRIMARY KEY (testid) \
-			) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;"
+            sqlcreate="CREATE TABLE IF NOT EXISTS  tests ( \
+              testid int(11) NOT NULL AUTO_INCREMENT, \
+              buildlife varchar(45) DEFAULT NULL, \
+              project varchar(45) DEFAULT NULL, \
+              environment varchar(45) DEFAULT NULL, \
+              duration varchar(45) DEFAULT NULL, \
+              comment varchar(45) DEFAULT NULL, \
+              startdate varchar(45) DEFAULT NULL, \
+              accepted varchar(45) DEFAULT NULL, \
+              status int(11) DEFAULT NULL, \
+              value9 varchar(45) DEFAULT NULL, \
+              value10 varchar(45) DEFAULT NULL, \
+              PRIMARY KEY (testid) \
+            ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;"
 
-			dosql "$sqlcreate"
+            dosql "$sqlcreate"
 
-			# Insert a new row in tests table,
+            # Insert a new row in tests table,
 
-			sqlInsertTestid="INSERT INTO $DB_NAME.tests (buildlife, project, environment, duration, comment, startdate, accepted, status) VALUES (\"$4\", \"$5\", \"$6\", \"0\", \"$7\", \"0\", \"N\", \"0\")"
+            sqlInsertTestid="INSERT INTO $DB_NAME.tests (buildlife, project, environment, duration, comment, startdate, accepted, status) VALUES (\"$4\", \"$5\", \"$6\", \"0\", \"$7\", \"0\", \"N\", \"0\")"
 
-			dosql "$sqlInsertTestid"
+            dosql "$sqlInsertTestid"
 
-			# Get last testid
-			sqlGetMaxTestid="SELECT max(testid) from $DB_NAME.tests"
+            # Get last testid
+            sqlGetMaxTestid="SELECT max(testid) from $DB_NAME.tests"
 
-			dosql "$sqlGetMaxTestid"
+            dosql "$sqlGetMaxTestid"
 
-			newTestid=$(echo $sqlresult | cut -d ' ' -f2)
-			;;
+            newTestid=$(echo $sqlresult | cut -d ' ' -f2)
+            ;;
 
-		1)	#running
+        1)  #running
 
-			# Update status in tests
-			sqlUpdateStatus="UPDATE $DB_NAME.tests SET status = 1, startdate = $8 WHERE testid = $2"
+            # Update status in tests
+            sqlUpdateStatus="UPDATE $DB_NAME.tests SET status = 1, startdate = $8 WHERE testid = $2"
 
-			dosql "$sqlUpdateStatus"
-			;;
+            dosql "$sqlUpdateStatus"
+            ;;
 
-		2)	#complete
+        2)  #complete
 
-			# Update status in tests
-			sqlUpdateStatus="UPDATE $DB_NAME.tests SET status = 2, duration = $3 WHERE testid = $2"
+            # Update status in tests
+            sqlUpdateStatus="UPDATE $DB_NAME.tests SET status = 2, duration = $3 WHERE testid = $2"
 
-			dosql "$sqlUpdateStatus"
-			;;
-	esac
+            dosql "$sqlUpdateStatus"
+            ;;
+    esac
 }
 
 function control_c(){
-	# Turn off the CTRL-C trap now that it has been invoked once already
-	trap - INT
+    # Turn off the CTRL-C trap now that it has been invoked once already
+    trap - INT
 
     # Stop the running test on each host
     echo
@@ -1044,5 +1043,4 @@ check_prereqs
 runsetup
 runtest
 runcleanup
-
 
