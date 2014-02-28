@@ -8,9 +8,9 @@ var AWS = require('aws-sdk'),
 nconf.argv().env();
 
 var ec2 = new AWS.EC2({region: 'us-west-2'}),
-    reqNum = nconf.get('NUM_EC2');
+    reqNum = (nconf.get('_')[0] || noconf.get('');
 
-console.log('num_ec2: ' + reqNum);
+console.log('num_ec2: ' + (reqNum || 0));
 
 ec2.describeInstances(function(error, data) {
   if (error) {
@@ -37,7 +37,6 @@ ec2.describeInstances(function(error, data) {
         console.log('just enough running!');
       } else {
         console.log('need to start ' + (reqNum - (instancesByState.running || 0)) + ' more');
-        console.log('which ones? ' + _.filter(instances, {state: 'stopped'}));
       }
     } else {
       console.log ('gotta start all the stopped ones and make ' + (reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0))) + ' more');
@@ -52,14 +51,9 @@ ec2.describeInstances(function(error, data) {
         } else {
           console.log('startInstances data: ');
           console.dir(data);
-          //wait for instances to all start
-
         }
       });
-      //start all the stopped ones
-      //create number of extra machines
     }
   }
 
 });
-
