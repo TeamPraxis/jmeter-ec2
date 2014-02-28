@@ -42,8 +42,11 @@ ec2.describeInstances(function(error, data) {
       }
     } else {
       console.log ('gotta start all the stopped ones and make ' + (reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0))) + ' more');
-      console.log('which ones? ');
-      console.dir(_.filter(instances, {state: 'stopped'}));
+      var startInstances = _.chain(instances)
+        .filter({state: 'stopped'})
+        .pluck(id)
+        .sample((instancesByState.stopped || 0)).value();
+      console.log('startInstances = ' + startInstances);
       //start all the stopped ones
       //create number of extra machines
     }
