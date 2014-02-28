@@ -47,7 +47,7 @@ ec2.describeInstances(function(error, data) {
         .pluck('id')
         .sample((instancesByState.stopped || 0)).value();
       console.log('startInstances = ' + startInstances);
-      ec2.startInstances(startInstances, function(error, data) {
+      ec2.startInstances({InstanceIds: startInstances}, function(error, data) {
         if (error) {
           console.log('startInstances error: ' + error);
         } else {
