@@ -14,7 +14,7 @@ console.log('num_ec2: ' + reqNum);
 
 ec2.describeInstances(function(error, data) {
   if (error) {
-    console.log(error); // an error occurred
+    console.log('describeInstances error: ' + error);
   } else {
     var instances = _.chain(data.Reservations)
       .pluck('Instances')
@@ -29,7 +29,6 @@ ec2.describeInstances(function(error, data) {
         };
       }).value();
     console.log(instances.length + " JMeter instances:\n ", instances);
-    console.log("state totals: ");
     var instancesByState = _.countBy(instances, 'state');
     console.dir(instancesByState);
 
@@ -51,7 +50,10 @@ ec2.describeInstances(function(error, data) {
         if (error) {
           console.log('startInstances error: ' + error);
         } else {
-          console.log('startInstances data: ' + data);
+          console.log('startInstances data: ');
+          console.dir(data);
+          //wait for instances to all start
+
         }
       });
       //start all the stopped ones
