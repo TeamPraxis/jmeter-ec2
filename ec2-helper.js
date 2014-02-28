@@ -2,10 +2,15 @@
 'use strict';
 
 var AWS = require('aws-sdk'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    nconf = require('nconf');
+
+nconf.argv().env();
 
 var ec2 = new AWS.EC2({region: 'us-west-2'}),
-    reqNum = 1;
+    reqNum = nconf.get('NUM_EC2');
+
+console.log('num_ec2: ' + reqNum);
 
 ec2.describeInstances(function(error, data) {
   if (error) {
