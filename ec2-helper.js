@@ -44,7 +44,7 @@ ec2.describeInstances(function(error, data) {
       console.log ('gotta start all the stopped ones and make ' + (reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0))) + ' more');
       var startInstances = _.chain(instances)
         .filter({state: 'stopped'})
-        .pluck(id)
+        .pluck('id')
         .sample((instancesByState.stopped || 0)).value();
       console.log('startInstances = ' + startInstances);
       //start all the stopped ones
