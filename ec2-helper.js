@@ -38,11 +38,11 @@ ec2.describeInstances(function(error, data) {
         console.log('just enough running!');
       } else {
         console.log('need to start ' + (reqNum - (instancesByState.running || 0)) + ' more');
-        console.log('which ones? ' + _.filter(instances, 'stopped'));
+        console.log('which ones? ' + _.filter(instances, {state: 'stopped'}));
       }
     } else {
       console.log ('gotta start all the stopped ones and make ' + (reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0))) + ' more');
-      console.log('which ones? ' + _.filter(instances, 'stopped'));
+      console.log('which ones? ' + _.filter(instances, {state: 'stopped'}));
       //start all the stopped ones
       //create number of extra machines
     }
