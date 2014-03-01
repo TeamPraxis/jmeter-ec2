@@ -9,7 +9,7 @@ var AWS = require('aws-sdk'),
 nconf.argv().env();
 
 var ec2 = new AWS.EC2({region: 'us-west-2'}),
-    reqNum = (nconf.get('_')[0] || nconf.get('NUM_EC2')),
+    reqNum = (nconf.get('NUM_EC2') || nconf.get('_')[0]),
     instances,
     startNum = 0,
     makeNum = 0;
