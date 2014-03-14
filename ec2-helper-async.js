@@ -20,23 +20,24 @@ var startEC2 = function(instances, startNum, makeNum, callback) {
     .pluck('id')
     .sample(startNum).value();
 
-  console.log('startInstances = ' + startInstances);
   if (startNum > 0) {
     ec2.startInstances({InstanceIds: startInstances}, function(err, data) {
       if (err) {
         console.log('error when starting instances: ', err);
       } else {
+        console.log('starting these instances: ');
         _.each(data.StartingInstances, function(instance) {
           console.dir(instance);
         });
       }
-      callback(err, makeNum);
+      callback(err, makeNum, startInstances);
     });
+  } else {
+    callback(null, makeNum, startInstances);
   };
-  callback(null, makeNum);
 };
 
-var createEC2 = function(makeNum, callback) {
+var createEC2 = function(makeNum, instanceList, callback) {
   var params = {
     ImageId: 'ami-f8bdd1c8',
     MaxCount: makeNum,
@@ -47,11 +48,21 @@ var createEC2 = function(makeNum, callback) {
   };
   console.log('creating ' + makeNum + ' instances...');
   if (makeNum > 0) {
-    ec2.runInstances(params, callback);
+    ec2.runInstances(params, function(err, data) {
+      if(err) {
+        console.log('error when creating instances: ', err);
+      } else {
+        var instanceIds = _.pluck(data.Instances, 'InstanceId');
+        console.log('created instances: ' + instanceIds);
+        callback(null, _.union(instanceList, instanceIds), instanceIds);
+      }
+    });
+  } else {
+    callback(null, instanceList, null);
   };
 };
 
-var createTags = function(instanceIds, callback) {
+var createTags = function(instanceList, instanceIds, callback) {
   var params = {
     Resources: instanceIds,
     Tags: [
@@ -61,11 +72,18 @@ var createTags = function(instanceIds, callback) {
       }
     ]
   };
-  console.log('params for createTags: ');
-  console.dir(params);
   if (instanceIds.length > 0) {
-    ec2.createTags(params, callback);
-  };
+    ec2.createTags(params, function(err, data) {
+      if(err) {
+        console.log('error when creating tags: ', err);
+        callback(err, instanceList);
+      } else {
+        callback(null, instanceList);    
+      } 
+    });
+  } else {
+    callback(null, instanceList);
+  }; 
 };
 
 async.waterfall([
@@ -95,20 +113,14 @@ async.waterfall([
         callback(null, instances, startNum, makeNum);
       }
     } else {
-      console.log ('gotta start all the stopped ones and make ' + (reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0))) + ' more');
+      console.log ('need to make ' + (reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0))) + ' more');
       startNum = instancesByState.stopped || 0;
       makeNum = reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0));
       callback(null, instances, startNum, makeNum);
     }
-    console.log('startNum: ' + startNum);
   },
   startEC2,
   createEC2,
-  function(data, callback) {
-    var instanceIds = _.pluck(data.Instances, 'InstanceId');
-    console.log('created instances: ' + instanceIds);
-    callback(null, instanceIds);
-  },
   createTags
 
 ], function(error, results) {
@@ -119,6 +131,6 @@ async.waterfall([
           console.log("waterfall error: " + error);
     }
   } else {
-    console.log("no waterfall error");
+    console.log('Here are all the instances that were started or created: ' + results);
   }
 });
