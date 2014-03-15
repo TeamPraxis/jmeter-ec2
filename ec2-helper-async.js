@@ -14,6 +14,8 @@ var ec2 = new AWS.EC2({region: 'us-west-2'}),
     startNum = 0,
     makeNum = 0;
 
+console.log('Looking for ' + reqNum + ' instances');
+
 var startEC2 = function(instances, startNum, makeNum, runningInstances, callback) {
   var startInstances = _.chain(instances)
     .filter({state: 'stopped'})
