@@ -14,7 +14,7 @@ var ec2 = new AWS.EC2({region: 'us-west-2'}),
     startNum = 0,
     makeNum = 0;
 
-var startEC2 = function(instances, startNum, makeNum, callback) {
+var startEC2 = function(instances, startNum, makeNum, runningInstances, callback) {
   var startInstances = _.chain(instances)
     .filter({state: 'stopped'})
     .pluck('id')
@@ -30,10 +30,10 @@ var startEC2 = function(instances, startNum, makeNum, callback) {
           console.dir(instance);
         });
       }
-      callback(err, makeNum, startInstances);
+      callback(err, makeNum, _.union(startInstances, runningInstances));
     });
   } else {
-    callback(null, makeNum, startInstances);
+    callback(null, makeNum, runningInstances);
   };
 };
 
@@ -46,7 +46,7 @@ var createEC2 = function(makeNum, instanceList, callback) {
     KeyName: 'Jenkins',
     SecurityGroups: ['Simple-Web']
   };
-  console.log('creating ' + makeNum + ' instances...');
+  
   if (makeNum > 0) {
     ec2.runInstances(params, function(err, data) {
       if(err) {
@@ -106,26 +106,21 @@ async.waterfall([
     var running = (instancesByState.running || 0),
         stopped = (instancesByState.stopped || 0), 
         available = running + stopped,
-        runningInstances = [];
-
-    console.dir(instancesByState);
-    if (reqNum <= available) {
-      if (reqNum <= running) {
         runningInstances = _.chain(instances)
           .filter({state: 'running'})
-          .pluck('id')
-          .sample(reqNum).value();
-        callback('moof', runningInstances);
-      } else {
-          console.log('need to start ' + (reqNum - running) + ' more');
+          .pluck('id').value();
+
+    if (reqNum <= available) {
+      if (reqNum <= running) {
+        callback('moof', _.sample(runningInstances, reqNum));
+      } else {          
           startNum = (reqNum - running);
-          callback(null, instances, startNum, makeNum);
+          callback(null, instances, startNum, makeNum, runningInstances);
       }
     } else {
-      console.log ('need to make ' + (reqNum - available) + ' more');
       startNum = stopped;
       makeNum = (reqNum - available);
-      callback(null, instances, startNum, makeNum);
+      callback(null, instances, startNum, makeNum, runningInstances);
     }
   },
   startEC2,
