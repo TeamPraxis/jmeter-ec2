@@ -72,7 +72,7 @@ var createTags = function(instanceList, instanceIds, callback) {
       }
     ]
   };
-  if (instanceIds.length > 0) {
+  if (instanceIds) {
     ec2.createTags(params, function(err, data) {
       if(err) {
         console.log('error when creating tags: ', err);
@@ -103,19 +103,28 @@ async.waterfall([
       }).value();
     console.log(instances.length + " JMeter instances:\n ", instances);
     var instancesByState = _.countBy(instances, 'state');
+    var running = (instancesByState.running || 0),
+        stopped = (instancesByState.stopped || 0), 
+        available = running + stopped,
+        runningInstances = [];
+
     console.dir(instancesByState);
-    if (reqNum <= ((instancesByState.running || 0) + (instancesByState.stopped || 0))) {
-      if (reqNum <= (instancesByState.running || 0)) {
-        callback('moof', instances, startNum, makeNum);
-    } else {
-        console.log('need to start ' + (reqNum - (instancesByState.running || 0)) + ' more');
-        startNum = reqNum - (instancesByState.running || 0);
-        callback(null, instances, startNum, makeNum);
+    if (reqNum <= available) {
+      if (reqNum <= running) {
+        runningInstances = _.chain(instances)
+          .filter({state: 'running'})
+          .pluck('id')
+          .sample(reqNum).value();
+        callback('moof', runningInstances);
+      } else {
+          console.log('need to start ' + (reqNum - running) + ' more');
+          startNum = (reqNum - running);
+          callback(null, instances, startNum, makeNum);
       }
     } else {
-      console.log ('need to make ' + (reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0))) + ' more');
-      startNum = instancesByState.stopped || 0;
-      makeNum = reqNum - ((instancesByState.running || 0) + (instancesByState.stopped || 0));
+      console.log ('need to make ' + (reqNum - available) + ' more');
+      startNum = stopped;
+      makeNum = (reqNum - available);
       callback(null, instances, startNum, makeNum);
     }
   },
@@ -126,7 +135,7 @@ async.waterfall([
 ], function(error, results) {
   if (error) {
     if (error === 'moof') {
-      console.log('no action needed, machines are running...')
+      console.log('machines are already running: ' + results)
     } else {
           console.log("waterfall error: " + error);
     }
