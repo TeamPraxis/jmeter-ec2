@@ -14,7 +14,7 @@ var ec2 = new AWS.EC2({region: 'us-west-2'}),
     startNum = 0,
     makeNum = 0;
 
-console.log('Looking for ' + reqNum + ' instances');
+//console.log('Looking for ' + reqNum + ' instances');
 
 var startEC2 = function(instances, startNum, makeNum, runningInstances, callback) {
   var startInstances = _.chain(instances)
@@ -25,12 +25,12 @@ var startEC2 = function(instances, startNum, makeNum, runningInstances, callback
   if (startNum > 0) {
     ec2.startInstances({InstanceIds: startInstances}, function(err, data) {
       if (err) {
-        console.log('error when starting instances: ', err);
+        //console.log('error when starting instances: ', err);
       } else {
-        console.log('starting these instances: ');
+/*        console.log('starting these instances: ');
         _.each(data.StartingInstances, function(instance) {
           console.dir(instance);
-        });
+        });*/
       }
       callback(err, makeNum, _.union(startInstances, runningInstances));
     });
@@ -52,10 +52,10 @@ var createEC2 = function(makeNum, instanceList, callback) {
   if (makeNum > 0) {
     ec2.runInstances(params, function(err, data) {
       if(err) {
-        console.log('error when creating instances: ', err);
+        //console.log('error when creating instances: ', err);
       } else {
         var instanceIds = _.pluck(data.Instances, 'InstanceId');
-        console.log('created instances: ' + instanceIds);
+        //console.log('created instances: ' + instanceIds);
         callback(null, _.union(instanceList, instanceIds), instanceIds);
       }
     });
@@ -77,7 +77,7 @@ var createTags = function(instanceList, instanceIds, callback) {
   if (instanceIds) {
     ec2.createTags(params, function(err, data) {
       if(err) {
-        console.log('error when creating tags: ', err);
+        //console.log('error when creating tags: ', err);
         callback(err, instanceList);
       } else {
         callback(null, instanceList);    
@@ -103,7 +103,7 @@ async.waterfall([
           state: i.State.Name
         };
       }).value();
-    console.log(instances.length + " JMeter instances:\n ", instances);
+    //console.log(instances.length + " JMeter instances:\n ", instances);
     var instancesByState = _.countBy(instances, 'state');
     var running = (instancesByState.running || 0),
         stopped = (instancesByState.stopped || 0), 
@@ -132,12 +132,14 @@ async.waterfall([
 ], function(error, results) {
   if (error) {
     if (error === 'moof') {
-      console.log('machines are already running: ' + results);
+      //console.log('machines are already running: ' + results);
       return results;
     } else {
-          console.log("waterfall error: " + error);
+          //console.log("waterfall error: " + error);
+      return err;
     }
   } else {
-    console.log('Here are all the instances that were started or created: ' + results);
+    //console.log('Here are all the instances that were started or created: ' + results);
+    return results;
   }
 });
