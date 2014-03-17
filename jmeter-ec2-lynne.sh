@@ -163,8 +163,7 @@ function runsetup() {
 
         # create the instance(s) and capture the instance id(s)
         echo -n "requesting $instance_count instance(s)..."
-        attempted_instanceids=(`node $LOCAL_HOME/ec2-helper-async.js $instance_count`)
-        echo $attempted_instanceids
+        node $LOCAL_HOME/ec2-helper-async.js $instance_count
     fi    
 }
 #         # check to see if Amazon returned the desired number of instances as a limit is placed restricting this and we need to handle the case where
