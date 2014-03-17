@@ -1033,6 +1033,4 @@ trap control_c SIGINT
 
 check_prereqs
 runsetup
-runtest
-runcleanup
 

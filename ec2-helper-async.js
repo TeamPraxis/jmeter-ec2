@@ -132,7 +132,8 @@ async.waterfall([
 ], function(error, results) {
   if (error) {
     if (error === 'moof') {
-      console.log('machines are already running: ' + results)
+      console.log('machines are already running: ' + results);
+      return results;
     } else {
           console.log("waterfall error: " + error);
     }
