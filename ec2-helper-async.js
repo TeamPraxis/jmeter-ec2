@@ -132,14 +132,14 @@ async.waterfall([
 ], function(error, results) {
   if (error) {
     if (error === 'moof') {
-      //console.log('machines are already running: ' + results);
+      console.log(results);
       return results;
     } else {
           //console.log("waterfall error: " + error);
       return err;
     }
   } else {
-    //console.log('Here are all the instances that were started or created: ' + results);
+    console.log(results);
     return results;
   }
 });
