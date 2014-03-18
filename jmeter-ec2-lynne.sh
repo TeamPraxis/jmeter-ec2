@@ -168,6 +168,8 @@ function runsetup() {
         # check to see if Amazon returned the desired number of instances as a limit is placed restricting this and we need to handle the case where
         # less than the expected number is given wthout failing the test.
         countof_instanceids=${#attempted_instanceids[@]}
+        echo -n "count of instances $countof_instanceids"
+        
         if [ "$countof_instanceids" = 0 ] ; then
             echo
             echo "Amazon did not supply any instances, exiting"
