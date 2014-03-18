@@ -132,8 +132,8 @@ async.waterfall([
 ], function(error, results) {
   if (error) {
     if (error === 'moof') {
-      //console.log(results.valueOf());
-      return results.valueOf();
+      console.log('' + results);
+      //return results.valueOf();
     } else {
           //console.log("waterfall error: " + error);
       return err;
