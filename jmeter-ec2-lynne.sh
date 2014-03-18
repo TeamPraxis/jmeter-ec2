@@ -168,7 +168,7 @@ function runsetup() {
         # check to see if Amazon returned the desired number of instances as a limit is placed restricting this and we need to handle the case where
         # less than the expected number is given wthout failing the test.
         countof_instanceids=${#attempted_instanceids[@]}
-        echo -n "count of instances $countof_instanceids"
+        echo -n "count of instances $countof_instanceids ......."
 
         if [ "$countof_instanceids" = 0 ] ; then
             echo
@@ -185,8 +185,6 @@ function runsetup() {
         echo
 
         # wait for each instance to be fully operational
-        echo "i am HERE"
-        echo "count of instance ids check 2: $countof_instanceids"
         status_check_count=0
         status_check_limit=90
         status_check_limit=`echo "$status_check_limit + $countof_instanceids" | bc` # increase wait time based on instance count
