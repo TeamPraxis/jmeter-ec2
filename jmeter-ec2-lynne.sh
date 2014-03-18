@@ -164,7 +164,7 @@ function runsetup() {
         # create the instance(s) and capture the instance id(s)
         echo -n "requesting $instance_count instance(s)..."
         attempted_instanceids=`node $LOCAL_HOME/ec2-helper-async.js $instance_count`
-        echo -n ${#attempted_instanceids[@]}
+        echo -n ${attempted_instanceids}
         # check to see if Amazon returned the desired number of instances as a limit is placed restricting this and we need to handle the case where
         # less than the expected number is given wthout failing the test.
         countof_instanceids=${#attempted_instanceids[@]}
@@ -194,6 +194,7 @@ function runsetup() {
         do
             echo -n .
             status_check_count=$(( $status_check_count + 1))
+            echo -n "checking ${attempted_instanceids[@]}"
             count_passed=$(ec2-describe-instance-status --region $REGION ${attempted_instanceids[@]} | awk '/INSTANCESTATUS/ {print $3}' | grep -c passed)
             sleep 3
         done
