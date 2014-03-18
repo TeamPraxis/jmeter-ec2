@@ -132,14 +132,14 @@ async.waterfall([
 ], function(error, results) {
   if (error) {
     if (error === 'moof') {
-      console.log('' + results);
+      console.log('' + results.toString().replace(',', ' '));
       //return results.valueOf();
     } else {
           //console.log("waterfall error: " + error);
       return err;
     }
   } else {
-    //console.log(results.valueOf());
-    return results;
+    console.log('' + results);
+    //return results;
   }
 });
