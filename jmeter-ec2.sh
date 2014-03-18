@@ -174,7 +174,7 @@ function runsetup() {
                     | awk '/^INSTANCE/ {print $2}'`)
 
         echo -n "lynne added this"
-        echo -n $attempted_instanceids
+        echo -n ${attempted_instanceids[@]}
 
         # check to see if Amazon returned the desired number of instances as a limit is placed restricting this and we need to handle the case where
         # less than the expected number is given wthout failing the test.
