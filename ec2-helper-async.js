@@ -38,6 +38,9 @@ var createEC2 = function(makeNum, instanceList, callback) {
     SecurityGroups: [process.env.INSTANCE_SECURITYGROUP]
   };
   
+  console.log('AMI_ID? ' + process.env.AMI_ID);
+  console.log('params for createEC2: ');
+  console.dir(params);
   if (makeNum > 0) {
     ec2.runInstances(params, function(err, data) {
       if(err) {
