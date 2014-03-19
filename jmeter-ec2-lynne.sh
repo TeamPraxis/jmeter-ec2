@@ -164,7 +164,7 @@ function runsetup() {
         # create the instance(s) and capture the instance id(s)
         echo -n "requesting $instance_count instance(s)..."
         attempted_instanceids_list=`node $LOCAL_HOME/ec2-helper-async.js $instance_count`
-        retval = $?
+        retval=$?
         if [ $retval -ne 0 ]; then
             exit
         fi
