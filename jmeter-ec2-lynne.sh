@@ -161,6 +161,11 @@ function runsetup() {
         echo
         echo
 
+        #export environment variables needed for node script
+        export AMI_ID
+        export INSTANCE_TYPE
+        export INSTANCE_SECURITYGROUP
+        export AMAZON_KEYPAIR_NAME
         # create the instance(s) and capture the instance id(s)
         echo -n "requesting $instance_count instance(s)..."
         attempted_instanceids_list=`node $LOCAL_HOME/ec2-helper-async.js $instance_count`
