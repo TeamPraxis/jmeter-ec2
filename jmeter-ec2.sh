@@ -151,7 +151,7 @@ function runsetup() {
             fi
         fi
 
-        # default to 1 instance if a count is not specified
+       # default to 1 instance if a count is not specified
         if [ -z "$instance_count" ] ; then instance_count=1; fi
 
         echo
@@ -161,21 +161,20 @@ function runsetup() {
         echo
         echo
 
+        #export environment variables needed for node script
+        export AMI_ID
+        export INSTANCE_TYPE
+        export INSTANCE_SECURITYGROUP
+        export AMAZON_KEYPAIR_NAME
         # create the instance(s) and capture the instance id(s)
         echo -n "requesting $instance_count instance(s)..."
-        attempted_instanceids=(`ec2-run-instances \
-                    --key $AMAZON_KEYPAIR_NAME \
-                    -t $INSTANCE_TYPE \
-                    -g $INSTANCE_SECURITYGROUP \
-                    -n 1-$instance_count \
-                    --region $REGION \
-                    --availability-zone \
-                    $INSTANCE_AVAILABILITYZONE $AMI_ID \
-                    | awk '/^INSTANCE/ {print $2}'`)
-
-        echo -n "lynne added this"
-        echo -n ${attempted_instanceids[@]}
-
+        attempted_instanceids_list=`node $LOCAL_HOME/ec2-helper-async.js $instance_count`
+        retval=$?
+        if [ $retval -ne 0 ]; then
+            exit
+        fi
+        attempted_instanceids=($attempted_instanceids_list)
+        
         # check to see if Amazon returned the desired number of instances as a limit is placed restricting this and we need to handle the case where
         # less than the expected number is given wthout failing the test.
         countof_instanceids=${#attempted_instanceids[@]}
