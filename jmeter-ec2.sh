@@ -174,7 +174,7 @@ function runsetup() {
             exit
         fi
         attempted_instanceids=($attempted_instanceids_list)
-        
+
         # check to see if Amazon returned the desired number of instances as a limit is placed restricting this and we need to handle the case where
         # less than the expected number is given wthout failing the test.
         countof_instanceids=${#attempted_instanceids[@]}
@@ -832,11 +832,14 @@ function runcleanup() {
     echo -n "processing results..."
     for (( i=0; i<$instance_count; i++ )) ; do
         cat $project_home/$project-$DATETIME-$i.jtl >> $project_home/$project-$DATETIME-grouped.jtl
+        echo "did you get here"
         rm $project_home/$project-$DATETIME-$i.jtl # removes the individual results files (from each host) - might be useful to some people to keep these files?
+        echo "check here"
     done
 
     # Srt File
     sort $project_home/$project-$DATETIME-grouped.jtl >> $project_home/$project-$DATETIME-sorted.jtl
+    echo "after sort"
 
     # Insert TESTID
     if [ ! -z "$DB_HOST" ] ; then
