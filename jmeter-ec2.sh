@@ -845,7 +845,7 @@ function runcleanup() {
         mv $project_home/$project-$DATETIME-sorted.jtl $project_home/$project-$DATETIME-appended.jtl
     fi
 
-    console.log('check 1');
+    echo "check 1"
     # Remove blank lines
     sed '/^$/d' $project_home/$project-$DATETIME-appended.jtl >> $project_home/$project-$DATETIME-noblanks.jtl
 
@@ -856,7 +856,7 @@ function runcleanup() {
 
     # Remove any lines containing "0,0,Error:" - which seems to be an intermittant bug in JM where the getTimestamp call fails with a nullpointer
     sed '/^0,0,Error:/d' $project_home/$project-$DATETIME-noblanks.jtl >> $project_home/$project-$DATETIME-complete.jtl
-console.log('check 2');
+echo "check 2"
     # Calclulate test duration
     start_time=$(head -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
     end_time=$(tail -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
@@ -869,7 +869,7 @@ console.log('check 2');
         # mark test as complete in database
         updateTest 2 "$newTestid" "$duration"
     fi
-console.log('check 3');
+echo "check 3"
     # Tidy up
     if [ -e "$project_home/$project-$DATETIME-grouped.jtl" ] ; then rm $project_home/$project-$DATETIME-grouped.jtl ; fi
     if [ -e "$project_home/$project-$DATETIME-sorted.jtl" ] ; then rm $project_home/$project-$DATETIME-sorted.jtl ; fi
@@ -877,7 +877,7 @@ console.log('check 3');
     if [ -e "$project_home/$project-$DATETIME-noblanks.jtl" ] ; then rm $project_home/$project-$DATETIME-noblanks.jtl ; fi
     mkdir -p $project_home/results/
     mv $project_home/$project-$DATETIME-complete.jtl $project_home/results/
-console.log('check 4');
+echo "check 4"
     #***************************************************************************
     # IMPORT RESULTS TO MYSQL DATABASE - IF SPECIFIED IN PROPERTIES
     # scp import-results.sh
@@ -942,7 +942,7 @@ console.log('check 4');
     # for debugging purposes you could comment out these lines
     if [ stat --printf='' $project_home/$DATETIME*.out 2>/dev/null ] ; then rm $project_home/$DATETIME*.out ; fi
     if [ stat --printf='' $project_home/working* 2>/dev/null ] ; then rm $project_home/working* ; fi
-console.log('check 5');
+echo "check 5"
 
     echo
     echo "   -------------------------------------------------------------------------------------"
