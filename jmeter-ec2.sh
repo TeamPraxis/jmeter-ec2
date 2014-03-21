@@ -861,6 +861,7 @@ echo "check 2"
     start_time=$(head -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
     end_time=$(tail -1 $project_home/$project-$DATETIME-complete.jtl | cut -d',' -f2)
     duration=$(echo "$end_time-$start_time" | bc)
+    echo $duration
     if [ ! $duration > 0 ] ; then
         duration=0;
     fi
