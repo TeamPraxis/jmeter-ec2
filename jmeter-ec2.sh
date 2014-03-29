@@ -513,7 +513,7 @@ function runsetup() {
 
     # scp the test files onto each host
     echo -n "copying test files to $instance_count server(s)..."
-    echo " COMMAND?  $PEM_PATH/$PEM_FILE -P $REMOTE_PORT $project_home/working_$y $USER@${hosts[$y]}:$REMOTE_HOME/execute.jmx)"
+    
     # scp jmx dir
     echo -n "jmx files.."
     for y in "${!hosts[@]}" ; do
