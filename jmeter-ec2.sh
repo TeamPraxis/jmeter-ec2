@@ -878,7 +878,7 @@ function runcleanup() {
     mv $project_home/$project-$DATETIME-complete.jtl $project_home/results/
     tail -n 1 $project_home/results/$project-$DATETIME-complete.jtl > $project_home/results/$PROJECT_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
     sed '$ d' $project_home/results/$project-$DATETIME-complete.jtl >> $project_home/results/$PROJECT_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
-    
+    rm $project_home/results/$project-$DATETIME-complete.jtl
 
     #***************************************************************************
     # IMPORT RESULTS TO MYSQL DATABASE - IF SPECIFIED IN PROPERTIES
