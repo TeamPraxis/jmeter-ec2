@@ -877,6 +877,7 @@ function runcleanup() {
     mkdir -p $project_home/results/
     mv $project_home/$project-$DATETIME-complete.jtl $project_home/results/
     echo "LOOK HERE: $PROJECT"
+    echo "LOOK HERE AGAIN: $PROJECT_NAME"
 
     #***************************************************************************
     # IMPORT RESULTS TO MYSQL DATABASE - IF SPECIFIED IN PROPERTIES
