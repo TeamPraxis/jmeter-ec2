@@ -876,8 +876,8 @@ function runcleanup() {
     if [ -e "$project_home/$project-$DATETIME-noblanks.jtl" ] ; then rm $project_home/$project-$DATETIME-noblanks.jtl ; fi
     mkdir -p $project_home/results/
     mv $project_home/$project-$DATETIME-complete.jtl $project_home/results/
-    tail -n 1 $project_home/results/$project-$DATETIME-complete.jtl > $project_home/results/$PROJECT_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
-    sed '$ d' $project_home/results/$project-$DATETIME-complete.jtl >> $project_home/results/$PROJECT_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
+    tail -n 1 $project_home/results/$project-$DATETIME-complete.jtl > $project_home/results/$NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
+    sed '$ d' $project_home/results/$project-$DATETIME-complete.jtl >> $project_home/results/$NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
     rm $project_home/results/$project-$DATETIME-complete.jtl
 
     #***************************************************************************
