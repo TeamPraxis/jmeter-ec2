@@ -16,13 +16,23 @@ module.exports = function(grunt) {
           cache: false,
           access: 'private'          
         },
-        src: '**/results/*.jtl'
+        cwd: 's3/',
+        src: '*.jtl'
+      }
+    },
+
+    copy: {
+      build: {
+        src: '**/results/*.jtl',
+        dest: 's3/'
       }
     }
+
   });
 
 
   grunt.loadNpmTasks('grunt-aws');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('publish',         ['s3']);
+  grunt.registerTask('publish',         ['copy', 's3']);
 };
