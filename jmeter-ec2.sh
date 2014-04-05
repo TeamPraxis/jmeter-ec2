@@ -876,11 +876,9 @@ function runcleanup() {
     if [ -e "$project_home/$project-$DATETIME-noblanks.jtl" ] ; then rm $project_home/$project-$DATETIME-noblanks.jtl ; fi
     mkdir -p $project_home/results/
     mv $project_home/$project-$DATETIME-complete.jtl $project_home/results/
-    #tail -n 1 $project_home/results/$project-$DATETIME-complete.jtl > $project_home/results/$JSON_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
-    #sed '$ d' $project_home/results/$project-$DATETIME-complete.jtl >> $project_home/results/$JSON_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
-    echo "LOOOOK HERE: $JSON_NAME"
-    echo "FILE NAME: $project_home/results/$JSON_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl"
-    #rm $project_home/results/$project-$DATETIME-complete.jtl
+    tail -n 1 $project_home/results/$project-$DATETIME-complete.jtl > $project_home/results/$JSON_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
+    sed '$ d' $project_home/results/$project-$DATETIME-complete.jtl >> $project_home/results/$JSON_NAME-${GIT_COMMIT:0:7}-$project-$DATETIME.jtl
+    rm $project_home/results/$project-$DATETIME-complete.jtl
 
     #***************************************************************************
     # IMPORT RESULTS TO MYSQL DATABASE - IF SPECIFIED IN PROPERTIES
