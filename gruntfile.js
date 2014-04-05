@@ -24,7 +24,9 @@ module.exports = function(grunt) {
     copy: {
       build: {
         src: '**/results/*.jtl',
-        dest: 's3/'
+        dest: 's3/',
+        flatten: true,
+        filter: 'isFile'
       }
     }
 
