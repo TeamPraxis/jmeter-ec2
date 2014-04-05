@@ -23,6 +23,7 @@ module.exports = function(grunt) {
 
     copy: {
       build: {
+        expand: true,
         src: '**/results/*.jtl',
         dest: 's3/',
         flatten: true
